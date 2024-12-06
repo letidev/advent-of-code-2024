@@ -4,44 +4,36 @@ with open("test.txt") as f:
 n = len(lines)
 m = len(lines[0])
 
-startR = 0
-startC = 0
+start = (0, 0)
 for i in range(n):
     j = lines[i].find("^")
     if j != -1:
-        startR, startC = i, j
+        start = (i, j)
         break
 
 total = 0
 outside = False
 direction = 0
-dirmap = {
-    0: (-1, 0),
-    1: (0, 1),
-    2: (1, 0),
-    3: (0, -1)
-}
+dirmap = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
 
 visited_part1 = [[False] * m for _ in range(n)]
-guardR = startR
-guardC = startC
+guard = start
 
 while not outside:
-    cell = lines[guardR][guardC]
+    cell = lines[guard[0]][guard[1]]
     if cell != "#":
-        if not visited_part1[guardR][guardC]:
+        if not visited_part1[guard[0]][guard[1]]:
             total += 1
-            visited_part1[guardR][guardC] = True
+            visited_part1[guard[0]][guard[1]] = True
     else:
-        guardR -= dirmap[direction][0]
-        guardC -= dirmap[direction][1]
+        guard = (guard[0] - dirmap[direction][0],
+                 guard[1] - dirmap[direction][1])
         direction = (direction + 1) % 4
 
-    guardR += dirmap[direction][0]
-    guardC += dirmap[direction][1]
+    guard = (guard[0] + dirmap[direction][0], guard[1] + dirmap[direction][1])
 
-    if guardR == -1 or guardR == n or guardC == -1 or guardC == m:
+    if guard[0] == -1 or guard[0] == n or guard[1] == -1 or guard[1] == m:
         outside = True
 
 print("part 1", total)
@@ -52,38 +44,30 @@ loops = 0
 for r in range(n):
     for c in range(m):
         if lines[r][c] == "." and visited_part1[r][c]:
-            oi = r  # obstacle row
-            oj = c  # obstacle col
+            obstacle = (r, c)
             visited = [[[False for _ in range(4)]
                         for _ in range(m)] for _ in range(n)]
             direction = 0
             outside = False
-            guardR = startR
-            guardC = startC
+            guard = start
 
             while not outside:
-                cell = lines[guardR][guardC]
+                if lines[guard[0]][guard[1]] == "#" or guard == obstacle:
+                    guard = (guard[0] - dirmap[direction][0],
+                             guard[1] - dirmap[direction][1])
 
-                # if stepped on an obstacle
-                if cell == "#" or (guardR == oi and guardC == oj):
-                    # take a step back
-                    guardR -= dirmap[direction][0]
-                    guardC -= dirmap[direction][1]
-
-                    # change direction
                     direction = (direction + 1) % 4
                 else:
-                    if visited[guardR][guardC][direction]:
+                    if visited[guard[0]][guard[1]][direction]:
                         loops += 1
                         break
                     else:
-                        visited[guardR][guardC][direction] = True
+                        visited[guard[0]][guard[1]][direction] = True
 
-                # move towards new direction
-                guardR += dirmap[direction][0]
-                guardC += dirmap[direction][1]
+                guard = (guard[0] + dirmap[direction][0],
+                         guard[1] + dirmap[direction][1])
 
-                if guardR == -1 or guardR == n or guardC == -1 or guardC == m:
+                if guard[0] == -1 or guard[0] == n or guard[1] == -1 or guard[1] == m:
                     outside = True
 
 print("part 2", loops)
