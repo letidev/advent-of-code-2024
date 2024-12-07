@@ -4,14 +4,15 @@ with open("test.txt") as f:
     lines = f.read().splitlines()
 
 
-def eq(n, pos, nums, sum, calcs) -> bool:
+def eq(n, pos, nums, sum, tv) -> bool:
+    if sum > tv:
+        return False
     if pos == n:
-        calcs.append(sum)
-        return
+        return sum == tv
 
-    eq(n, pos+1, nums, sum + nums[pos], calcs)
-    eq(n, pos+1, nums, sum * nums[pos], calcs)
-    eq(n, pos+1, nums, int(f"{sum}{nums[pos]}"), calcs)
+    return eq(n, pos+1, nums, sum + nums[pos], tv) or \
+        eq(n, pos+1, nums, sum * nums[pos], tv) or \
+        eq(n, pos+1, nums, int(f"{sum}{nums[pos]}"), tv)
 
 
 start_time = time.time()
@@ -22,10 +23,7 @@ for line in lines:
     nums = [int(x) for x in operation.split(" ")]
     n = len(nums)
 
-    calcs = []
-    eq(n, 1, nums, nums[0], calcs)
-
-    if tv in calcs:
+    if eq(n, 1, nums, nums[0], tv):
         total += tv
 
 print(time.time() - start_time, "seconds")
