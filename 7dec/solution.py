@@ -9,6 +9,7 @@ def eq(n, pos, nums, tv, sum, calcs) -> bool:
 
     eq(n, pos+1, nums, tv, sum + nums[pos], calcs)
     eq(n, pos+1, nums, tv, sum * nums[pos], calcs)
+    eq(n, pos+1, nums, tv, int(f"{sum}{nums[pos]}"), calcs)
 
 
 total = 0
