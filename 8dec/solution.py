@@ -27,12 +27,27 @@ for i in range(len(antennas) - 1):
             anti1i, anti1j = a1[1]-di, a1[2]-dj
             anti2i, anti2j = a2[1]+di, a2[2]+dj
 
-            if in_bounds(anti1i, anti1j, n, m) and not unique[anti1i][anti1j]:
-                unique[anti1i][anti1j] = True
+            while in_bounds(anti1i, anti1j, n, m):
+                if not unique[anti1i][anti1j]:
+                    unique[anti1i][anti1j] = True
+                    anti += 1
+                anti1i -= di
+                anti1j -= dj
+
+            while in_bounds(anti2i, anti2j, n, m):
+                if not unique[anti2i][anti2j]:
+                    unique[anti2i][anti2j] = True
+                    anti += 1
+                anti2i += di
+                anti2j += dj
+
+            if not unique[a1[1]][a1[2]]:
+                unique[a1[1]][a1[2]] = True
                 anti += 1
 
-            if in_bounds(anti2i, anti2j, n, m) and not unique[anti2i][anti2j]:
-                unique[anti2i][anti2j] = True
+            if not unique[a2[1]][a2[2]]:
+                unique[a2[1]][a2[2]] = True
                 anti += 1
+
 
 print(anti)
