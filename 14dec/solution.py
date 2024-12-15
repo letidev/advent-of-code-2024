@@ -32,17 +32,8 @@ def move(robot):
     p = robot["p"]
     v = robot["v"]
 
-    move_x = (p[0] + v[0]) % cols
-    move_y = (p[1] + v[1]) % rows
-
-    if move_x < 0:
-        move_x = cols + move_x
-
-    if move_y < 0:
-        move_y = rows + move_y
-
-    p[0] = move_x
-    p[1] = move_y
+    p[0] = ((p[0] + v[0]) % cols + cols) % cols
+    p[1] = ((p[1] + v[1]) % rows + rows) % rows
 
 
 # part 1
@@ -52,14 +43,8 @@ for robot in robots:
     p = robot["p"]
     v = robot["v"]
 
-    move_x = (p[0] + v[0]*100) % cols
-    move_y = (p[1] + v[1]*100) % rows
-
-    if move_x < 0:
-        move_x = cols + move_x
-
-    if move_y < 0:
-        move_y = rows + move_y
+    move_x = ((p[0] + v[0]*100) % cols + cols) % cols
+    move_y = ((p[1] + v[1]*100) % rows + rows) % rows
 
     if move_x > mid_x and move_y < mid_y:  # top right
         q1 += 1
