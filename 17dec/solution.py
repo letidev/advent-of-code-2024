@@ -63,36 +63,54 @@ def execute(program):
 
         if opcode == 0:
             adv(operand)
-            ptr += 2
         elif opcode == 1:
             bxl(operand)
-            ptr += 2
         elif opcode == 2:
             bst(operand)
-            ptr += 2
         elif opcode == 3:
             jump = jnz(operand)
             if jump != -1:
-                ptr = jump
-            else:
-                ptr += 2
+                ptr = jump - 2
         elif opcode == 4:
             bxc()
-            ptr += 2
         elif opcode == 5:
             out(operand, to_print)
-            ptr += 2
         elif opcode == 6:
             bdv(operand)
-            ptr += 2
         else:
             cdv(operand)
-            ptr += 2
 
-    return ','.join([str(x) for x in to_print])
+        ptr += 2
+
+    return to_print
 
 
 start_time = time.time()
-out_str = execute(program)
+output = execute(program)
 print(time.time() - start_time, "seconds")
-print(out_str)
+print(','.join([str(x) for x in output]))
+print()
+
+# part 2
+start_time = time.time()
+search = ''.join(str(x) for x in program)
+a = 0
+match_len = 1
+
+while True:
+    REGISTERS[0] = a
+    output = execute(program)
+    out_str = ''.join(str(x) for x in output)
+
+    if search[-match_len:] == out_str:
+        if search == out_str:
+            break
+
+        a <<= 3
+        match_len += 1
+        continue
+
+    a += 1
+
+print(time.time() - start_time, "seconds")
+print(a)
